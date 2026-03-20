@@ -1,10 +1,42 @@
 import { motion, useScroll, useTransform } from 'motion/react';
-import { useRef, Suspense } from 'react';
+import { useRef, Suspense, useState, useEffect } from 'react';
 import { ArrowDown, Code, Cpu, Globe, Layers, Terminal } from 'lucide-react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment } from '@react-three/drei';
 import HeroObject from '../components/3d/HeroObject';
 import { useUISounds } from '../hooks/useUISounds';
+
+// Timeline Item Component for Parallax Effect
+function TimelineItem({ item, index }: { item: any, index: number }) {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "center center"]
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], [100, 0]);
+  const opacity = useTransform(scrollYProgress, [0, 1], [0, 1]);
+
+  return (
+    <motion.div 
+      ref={ref}
+      style={{ y, opacity }}
+      className={`relative flex flex-col md:flex-row items-center justify-between mb-24 ${index % 2 === 0 ? 'md:flex-row-reverse' : ''}`}
+    >
+      {/* Dot */}
+      <div className="absolute left-[-4px] md:left-1/2 top-0 w-3 h-3 bg-[#00F3FF] rounded-full shadow-[0_0_15px_#00F3FF] transform md:-translate-x-1/2" />
+      
+      <div className="w-full md:w-5/12 pl-8 md:pl-0">
+        <div className={`p-8 bg-black/50 backdrop-blur-md border border-white/10 rounded-2xl hover:border-[#4B0082] hover:shadow-[0_0_30px_rgba(75,0,130,0.3)] transition-all duration-500 ${index % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
+          <span className="text-[#00F3FF] font-mono text-lg font-bold tracking-widest">{item.year}</span>
+          <h3 className="text-2xl font-bold mt-3 mb-2">{item.role}</h3>
+          <p className="text-white/60 text-sm leading-relaxed">{item.desc}</p>
+        </div>
+      </div>
+      <div className="hidden md:block w-5/12" />
+    </motion.div>
+  );
+}
 
 export default function Home() {
   const { playHover, playClick } = useUISounds();
@@ -16,6 +48,21 @@ export default function Home() {
 
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+
+  const [typedText, setTypedText] = useState("");
+  const fullText = "SACHIN\nKUMAR";
+
+  useEffect(() => {
+    let i = 0;
+    const timer = setInterval(() => {
+      setTypedText(fullText.slice(0, i + 1));
+      i++;
+      if (i >= fullText.length) {
+        clearInterval(timer);
+      }
+    }, 150);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <div ref={containerRef} className="relative w-full">
@@ -43,11 +90,15 @@ export default function Home() {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
-            className="text-6xl md:text-8xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-[#00F3FF] to-[#4B0082]"
+            className="text-6xl md:text-8xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-[#00F3FF] to-[#4B0082] h-[140px] md:h-[220px]"
           >
-            CREATIVE
-            <br />
-            TECHNOLOGIST
+            {typedText.split('\n').map((line, i) => (
+              <span key={i}>
+                {line}
+                {i !== typedText.split('\n').length - 1 && <br />}
+              </span>
+            ))}
+            <span className="animate-pulse opacity-50">_</span>
           </motion.h1>
           
           <motion.p 
@@ -56,7 +107,7 @@ export default function Home() {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="mt-6 text-lg md:text-xl text-white/70 max-w-2xl font-light tracking-wide"
           >
-            Building immersive digital experiences at the intersection of design, engineering, and artificial intelligence.
+            Full Stack Web Developer • AI Generalist • Automation Intermediate
           </motion.p>
           
           <motion.div 
@@ -72,13 +123,14 @@ export default function Home() {
             >
               View Work
             </button>
-            <button 
+            <a 
+              href="#contact"
               onMouseEnter={playHover}
               onClick={playClick}
-              className="px-8 py-4 bg-transparent border border-white/20 text-white font-bold tracking-widest uppercase rounded-full hover:border-[#4B0082] hover:bg-[#4B0082]/20 transition-all duration-300"
+              className="px-8 py-4 bg-transparent border border-white/20 text-white font-bold tracking-widest uppercase rounded-full hover:border-[#4B0082] hover:bg-[#4B0082]/20 transition-all duration-300 inline-block"
             >
               Contact Me
-            </button>
+            </a>
           </motion.div>
         </motion.div>
 
@@ -118,8 +170,8 @@ export default function Home() {
           >
             <p>
               {[
-                "I am a multidisciplinary developer specializing in high-performance web applications, 3D graphics, and AI integration.",
-                "My mission is to push the boundaries of what's possible in the browser."
+                "I am Sachin Kumar, a multidisciplinary developer specializing in high-performance web applications, AI integration, and workflow automation.",
+                "My mission is to build intelligent systems that push the boundaries of what's possible in the browser."
               ].map((line, i) => (
                 <motion.span key={i} className="block" variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6 } } }}>
                   {line}
@@ -184,10 +236,10 @@ export default function Home() {
         
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {[
-            { icon: <Code className="w-8 h-8" />, title: "Frontend", desc: "React, Next.js, Tailwind" },
-            { icon: <Layers className="w-8 h-8" />, title: "3D & Motion", desc: "Three.js, WebGL, Framer" },
-            { icon: <Cpu className="w-8 h-8" />, title: "Backend", desc: "Node.js, Firebase, SQL" },
-            { icon: <Globe className="w-8 h-8" />, title: "AI Integration", desc: "Gemini, OpenAI, LangChain" }
+            { icon: <Code className="w-8 h-8" />, title: "Full Stack", desc: "React, Next.js, Node.js" },
+            { icon: <Globe className="w-8 h-8" />, title: "AI Generalist", desc: "LLMs, Prompt Engineering, RAG" },
+            { icon: <Layers className="w-8 h-8" />, title: "Automation", desc: "Workflows, CI/CD, Scripting" },
+            { icon: <Cpu className="w-8 h-8" />, title: "Backend", desc: "Firebase, SQL, APIs" }
           ].map((skill, i) => (
             <motion.div
               key={i}
@@ -195,14 +247,14 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1, duration: 0.5 }}
-              whileHover={{ y: -10, scale: 1.05 }}
-              className="p-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl hover:border-[#00F3FF]/50 hover:shadow-[0_0_30px_rgba(0,243,255,0.2)] transition-all group"
+              whileHover={{ y: -5, scale: 1.02 }}
+              className="p-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl hover:bg-gradient-to-br hover:from-white/10 hover:to-[#00F3FF]/10 hover:border-[#00F3FF]/50 hover:shadow-[0_0_40px_rgba(0,243,255,0.3)] transition-all duration-300 group cursor-pointer"
             >
-              <div className="w-16 h-16 rounded-full bg-black/50 border border-white/10 flex items-center justify-center mb-6 group-hover:text-[#00F3FF] group-hover:border-[#00F3FF]/50 transition-colors">
+              <div className="w-16 h-16 rounded-full bg-black/50 border border-white/10 flex items-center justify-center mb-6 group-hover:bg-[#00F3FF]/20 group-hover:text-[#00F3FF] group-hover:border-[#00F3FF]/50 group-hover:shadow-[0_0_20px_rgba(0,243,255,0.4)] transition-all duration-300">
                 {skill.icon}
               </div>
-              <h3 className="text-xl font-bold mb-2">{skill.title}</h3>
-              <p className="text-sm text-white/50">{skill.desc}</p>
+              <h3 className="text-xl font-bold mb-2 group-hover:text-[#00F3FF] transition-colors duration-300">{skill.title}</h3>
+              <p className="text-sm text-white/50 group-hover:text-white/80 transition-colors duration-300">{skill.desc}</p>
             </motion.div>
           ))}
         </div>
@@ -216,7 +268,7 @@ export default function Home() {
           viewport={{ once: true }}
           className="text-4xl md:text-6xl font-bold tracking-tighter mb-16 text-center"
         >
-          SYSTEM <span className="text-[#00F3FF]">LOGS</span>
+          EXPERIENCE <span className="text-[#00F3FF]">TIMELINE</span>
         </motion.h2>
 
         <div className="max-w-3xl mx-auto relative">
@@ -224,37 +276,17 @@ export default function Home() {
           <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-[#00F3FF] via-[#4B0082] to-transparent transform md:-translate-x-1/2" />
 
           {[
-            { year: "2026", role: "Lead Creative Technologist", company: "CyberDyne Systems", desc: "Architecting next-gen neural interfaces." },
-            { year: "2024", role: "Senior Frontend Engineer", company: "Nexus Corp", desc: "Built award-winning 3D web experiences." },
-            { year: "2022", role: "Full Stack Developer", company: "Quantum Web", desc: "Developed high-performance e-commerce platforms." }
+            { year: "2026", role: "AI Generalist", company: "Independent / Various", desc: "Leveraging advanced artificial intelligence models to solve complex problems and build innovative solutions." },
+            { year: "2026", role: "Automation Intermediate", company: "Independent / Various", desc: "Designing and implementing automated workflows to streamline processes and increase efficiency." },
+            { year: "2025", role: "Full Stack Web Developer", company: "Freelance / Projects", desc: "Developing robust, scalable, and interactive web applications using modern frontend and backend technologies." }
           ].map((item, i) => (
-            <motion.div 
-              key={i}
-              initial={{ opacity: 0, x: i % 2 === 0 ? -50 : 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-              className={`relative flex flex-col md:flex-row items-center justify-between mb-16 ${i % 2 === 0 ? 'md:flex-row-reverse' : ''}`}
-            >
-              {/* Dot */}
-              <div className="absolute left-[-4px] md:left-1/2 top-0 w-2 h-2 bg-[#00F3FF] rounded-full shadow-[0_0_10px_#00F3FF] transform md:-translate-x-1/2" />
-              
-              <div className="w-full md:w-5/12 pl-8 md:pl-0">
-                <div className={`p-6 bg-black/50 backdrop-blur-md border border-white/10 rounded-2xl hover:border-[#4B0082] transition-colors ${i % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
-                  <span className="text-[#00F3FF] font-mono text-sm">{item.year}</span>
-                  <h3 className="text-xl font-bold mt-2">{item.role}</h3>
-                  <h4 className="text-white/70 text-sm mb-4">{item.company}</h4>
-                  <p className="text-white/50 text-sm">{item.desc}</p>
-                </div>
-              </div>
-              <div className="hidden md:block w-5/12" />
-            </motion.div>
+            <TimelineItem key={i} item={item} index={i} />
           ))}
         </div>
       </section>
 
       {/* Contact Section */}
-      <section className="py-32 relative z-10">
+      <section id="contact" className="py-32 relative z-10">
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -265,22 +297,31 @@ export default function Home() {
           <h2 className="text-4xl font-bold tracking-tighter mb-2 text-center">INITIATE <span className="text-[#00F3FF]">CONTACT</span></h2>
           <p className="text-center text-white/50 mb-8 font-mono text-sm">AWAITING TRANSMISSION...</p>
 
-          <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+          <form 
+            className="space-y-6" 
+            action="https://formsubmit.co/1whitefanng1@gmail.com" 
+            method="POST"
+          >
+            {/* FormSubmit Configuration */}
+            <input type="hidden" name="_subject" value="New Contact from Portfolio!" />
+            <input type="hidden" name="_template" value="box" />
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-xs font-mono text-[#00F3FF]">IDENTIFIER</label>
-                <input type="text" className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#00F3FF]/50 transition-colors" placeholder="Name" />
+                <input type="text" name="name" required className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#00F3FF]/50 transition-colors" placeholder="Name" />
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-mono text-[#00F3FF]">COMM-LINK</label>
-                <input type="email" className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#00F3FF]/50 transition-colors" placeholder="Email" />
+                <input type="email" name="email" required className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#00F3FF]/50 transition-colors" placeholder="Email" />
               </div>
             </div>
             <div className="space-y-2">
               <label className="text-xs font-mono text-[#00F3FF]">PAYLOAD</label>
-              <textarea className="w-full h-32 bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#00F3FF]/50 transition-colors resize-y" placeholder="Message"></textarea>
+              <textarea name="message" required className="w-full h-32 bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#00F3FF]/50 transition-colors resize-y" placeholder="Message"></textarea>
             </div>
             <button 
+              type="submit"
               onMouseEnter={playHover}
               onClick={playClick}
               className="w-full py-4 bg-white text-black font-bold tracking-widest uppercase rounded-xl hover:bg-[#00F3FF] hover:shadow-[0_0_30px_rgba(0,243,255,0.6)] transition-all duration-300"

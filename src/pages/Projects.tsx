@@ -6,27 +6,27 @@ import { useUISounds } from '../hooks/useUISounds';
 const projects = [
   {
     id: 1,
-    title: "NEURAL LINK",
-    category: "AI INTERFACE",
-    image: "https://picsum.photos/seed/cyber/800/600",
-    description: "A brain-computer interface dashboard built with React and WebGL.",
-    tags: ["React", "Three.js", "WebSockets"]
+    title: "AI WORKFLOW AUTOMATION",
+    category: "AUTOMATION",
+    image: "https://picsum.photos/seed/automation/800/600",
+    description: "Automated business processes using LLMs and custom scripts.",
+    tags: ["Python", "LangChain", "APIs"]
   },
   {
     id: 2,
-    title: "QUANTUM COMMERCE",
-    category: "E-COMMERCE",
-    image: "https://picsum.photos/seed/quantum/800/600",
-    description: "Next-generation shopping experience with 3D product visualization.",
-    tags: ["Next.js", "Tailwind", "Stripe"]
+    title: "FULL STACK E-COMMERCE",
+    category: "WEB DEV",
+    image: "https://picsum.photos/seed/ecommerce/800/600",
+    description: "Scalable e-commerce platform with real-time inventory management.",
+    tags: ["Next.js", "Node.js", "PostgreSQL"]
   },
   {
     id: 3,
-    title: "SYNTH CITY",
-    category: "METAVERSE",
-    image: "https://picsum.photos/seed/synth/800/600",
-    description: "Multiplayer virtual environment for remote collaboration.",
-    tags: ["WebGL", "Firebase", "WebRTC"]
+    title: "INTELLIGENT DASHBOARD",
+    category: "AI INTERFACE",
+    image: "https://picsum.photos/seed/dashboard/800/600",
+    description: "Data visualization dashboard powered by generative AI insights.",
+    tags: ["React", "Gemini API", "Tailwind"]
   }
 ];
 
@@ -72,14 +72,14 @@ function ProjectCard({ project, index }: { project: typeof projects[0], index: n
         rotateY,
         transformStyle: "preserve-3d",
       }}
-      className="group relative h-[500px] rounded-3xl overflow-hidden bg-black/50 border border-white/10 hover:border-[#00F3FF]/50 hover:shadow-[0_0_50px_rgba(0,243,255,0.2)] transition-colors duration-300"
+      className="group relative h-[500px] rounded-3xl overflow-hidden bg-black/50 border border-white/10 hover:border-[#00F3FF] hover:shadow-[0_0_80px_rgba(0,243,255,0.6)] transition-all duration-500"
     >
       {/* Image Background */}
       <div className="absolute inset-0 z-0" style={{ transform: "translateZ(-20px)" }}>
         <img 
           src={project.image} 
           alt={project.title} 
-          className="w-full h-full object-cover opacity-50 group-hover:opacity-80 transition-opacity duration-500 scale-110"
+          className="w-full h-full object-cover opacity-50 group-hover:opacity-80 scale-100 group-hover:scale-110 transition-all duration-700 ease-out"
           referrerPolicy="no-referrer"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />

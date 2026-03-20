@@ -35,7 +35,8 @@ export default function Chatbot() {
     try {
       const response = await ai.models.generateContent({
         model: 'gemini-3.1-pro-preview',
-        contents: `You are an AI assistant on a futuristic portfolio website. 
+        contents: `You are an AI assistant on Sachin Kumar's futuristic portfolio website. 
+        Sachin is a Full Stack Web Developer, AI Generalist, and Automation Intermediate.
         Answer the user's question concisely and in a cyber/futuristic tone.
         User: ${userMessage}`,
         config: {
@@ -87,7 +88,7 @@ export default function Chatbot() {
             <div className="flex items-center justify-between p-4 border-b border-white/10 bg-gradient-to-r from-black to-[#4B0082]/30">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-[#00F3FF]" />
-                <h3 className="font-medium tracking-widest text-sm text-white">NEXUS AI</h3>
+                <h3 className="font-medium tracking-widest text-sm text-white">SACHIN AI</h3>
               </div>
               <button onClick={() => { playClick(); setIsOpen(false); }} onMouseEnter={playHover} className="text-white/50 hover:text-white transition-colors">
                 <X className="w-5 h-5" />

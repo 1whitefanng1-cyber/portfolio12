@@ -6,6 +6,18 @@
   --color-deep-purple: #4B0082;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --color-black: var(--bg-color);
+  --color-white: var(--text-color);
+}
+
+:root {
+  --bg-color: #000000;
+  --text-color: #ffffff;
+}
+
+.light {
+  --bg-color: #f8f9fa;
+  --text-color: #121212;
 }
 
 @layer utilities {
@@ -13,11 +25,11 @@
     width: 6px;
   }
   .scrollbar-thin::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
+    background: color-mix(in srgb, var(--text-color) 5%, transparent);
     border-radius: 10px;
   }
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
+    background: color-mix(in srgb, var(--text-color) 20%, transparent);
     border-radius: 10px;
   }
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
@@ -26,13 +38,14 @@
 }
 
 html, body {
-  background-color: #000;
-  color: #fff;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   overflow-x: hidden;
   position: relative;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 ::selection {
   background-color: #00F3FF;
-  color: #000;
+  color: var(--bg-color);
 }

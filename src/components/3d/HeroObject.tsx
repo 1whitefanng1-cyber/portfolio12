@@ -15,11 +15,21 @@ export default function HeroObject() {
       timeRef.current += delta;
       const t = timeRef.current;
       
-      meshRef.current.rotation.x = t * 0.2;
-      meshRef.current.rotation.y = t * 0.3;
+      // Smoothly adjust rotation speed based on hover
+      const targetRotSpeedX = hovered ? 0.8 : 0.2;
+      const targetRotSpeedY = hovered ? 1.2 : 0.3;
+      
+      meshRef.current.rotation.x += delta * targetRotSpeedX;
+      meshRef.current.rotation.y += delta * targetRotSpeedY;
       
       // Gentle floating
       meshRef.current.position.y = Math.sin(t) * 0.2;
+
+      // Pulsing scale effect on hover
+      const pulse = hovered ? 1.05 + Math.sin(t * 8) * 0.05 : 1;
+      const targetScale = clicked ? 1.2 : pulse;
+      
+      meshRef.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
     }
   });
 
@@ -27,7 +37,6 @@ export default function HeroObject() {
     <Icosahedron
       ref={meshRef}
       args={[1.5, 4]}
-      scale={clicked ? 1.2 : 1}
       onClick={() => setClick(!clicked)}
       onPointerOver={() => setHover(true)}
       onPointerOut={() => setHover(false)}

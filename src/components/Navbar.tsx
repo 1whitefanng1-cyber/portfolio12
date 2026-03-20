@@ -8,16 +8,24 @@ export default function Navbar() {
   const { playHover, playClick } = useUISounds();
   const location = useLocation();
   const [isLight, setIsLight] = useState(() => {
-    return localStorage.getItem('theme') === 'light';
+    try {
+      return localStorage.getItem('theme') === 'light';
+    } catch (e) {
+      return false;
+    }
   });
 
   useEffect(() => {
-    if (isLight) {
-      document.documentElement.classList.add('light');
-      localStorage.setItem('theme', 'light');
-    } else {
-      document.documentElement.classList.remove('light');
-      localStorage.setItem('theme', 'dark');
+    try {
+      if (isLight) {
+        document.documentElement.classList.add('light');
+        localStorage.setItem('theme', 'light');
+      } else {
+        document.documentElement.classList.remove('light');
+        localStorage.setItem('theme', 'dark');
+      }
+    } catch (e) {
+      // Ignore storage errors
     }
   }, [isLight]);
 

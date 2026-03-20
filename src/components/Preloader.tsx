@@ -2,7 +2,7 @@ import { motion } from 'motion/react';
 
 export default function Preloader() {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-color)]">
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -15,7 +15,7 @@ export default function Preloader() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.5 }}
-          className="text-2xl font-bold tracking-widest text-white"
+          className="text-2xl font-bold tracking-widest text-[var(--text-color)]"
         >
           INIT
         </motion.h1>

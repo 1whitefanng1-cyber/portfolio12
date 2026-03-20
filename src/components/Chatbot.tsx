@@ -6,7 +6,18 @@ import { db } from '../firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useUISounds } from '../hooks/useUISounds';
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+let aiClient: GoogleGenAI | null = null;
+
+function getAIClient() {
+  if (!aiClient) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      throw new Error("GEMINI_API_KEY is not set");
+    }
+    aiClient = new GoogleGenAI({ apiKey });
+  }
+  return aiClient;
+}
 
 export default function Chatbot() {
   const { playHover, playClick } = useUISounds();
@@ -33,6 +44,7 @@ export default function Chatbot() {
     setIsTyping(true);
 
     try {
+      const ai = getAIClient();
       const response = await ai.models.generateContent({
         model: 'gemini-3.1-pro-preview',
         contents: `You are an AI assistant on Sachin Kumar's futuristic portfolio website. 

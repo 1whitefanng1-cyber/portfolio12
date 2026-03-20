@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Icosahedron, MeshDistortMaterial } from '@react-three/drei';
 import * as THREE from 'three';
@@ -9,6 +9,7 @@ export default function HeroObject() {
   const [clicked, setClick] = useState(false);
 
   const timeRef = useRef(0);
+  const targetScaleVec = useMemo(() => new THREE.Vector3(), []);
 
   useFrame((state, delta) => {
     if (meshRef.current) {
@@ -29,7 +30,8 @@ export default function HeroObject() {
       const pulse = hovered ? 1.05 + Math.sin(t * 8) * 0.05 : 1;
       const targetScale = clicked ? 1.2 : pulse;
       
-      meshRef.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
+      targetScaleVec.set(targetScale, targetScale, targetScale);
+      meshRef.current.scale.lerp(targetScaleVec, 0.1);
     }
   });
 

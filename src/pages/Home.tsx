@@ -2,9 +2,11 @@ import { motion, useScroll, useTransform } from 'motion/react';
 import { useRef, Suspense, useState, useEffect } from 'react';
 import { ArrowDown, Code, Cpu, Globe, Layers, Terminal } from 'lucide-react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Environment } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei';
 import HeroObject from '../components/3d/HeroObject';
 import { useUISounds } from '../hooks/useUISounds';
+
+import { CanvasErrorBoundary } from '../App';
 
 // Timeline Item Component for Parallax Effect
 function TimelineItem({ item, index }: { item: any, index: number }) {
@@ -70,16 +72,17 @@ export default function Home() {
       <section className="relative h-screen flex flex-col items-center justify-center text-center">
         {/* Interactive 3D Object */}
         <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-auto">
-          <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-            <Suspense fallback={null}>
-              <ambientLight intensity={0.5} />
-              <directionalLight position={[10, 10, 5]} intensity={1} color="#00F3FF" />
-              <directionalLight position={[-10, -10, -5]} intensity={0.5} color="#4B0082" />
-              <HeroObject />
-              <OrbitControls enableZoom={false} enablePan={true} autoRotate autoRotateSpeed={0.5} />
-              <Environment preset="city" />
-            </Suspense>
-          </Canvas>
+          <CanvasErrorBoundary>
+            <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+              <Suspense fallback={null}>
+                <ambientLight intensity={0.5} />
+                <directionalLight position={[10, 10, 5]} intensity={1} color="#00F3FF" />
+                <directionalLight position={[-10, -10, -5]} intensity={0.5} color="#4B0082" />
+                <HeroObject />
+                <OrbitControls enableZoom={false} enablePan={true} autoRotate autoRotateSpeed={0.5} />
+              </Suspense>
+            </Canvas>
+          </CanvasErrorBoundary>
         </div>
 
         <motion.div 
@@ -305,6 +308,10 @@ export default function Home() {
             {/* FormSubmit Configuration */}
             <input type="hidden" name="_subject" value="New Contact from Portfolio!" />
             <input type="hidden" name="_template" value="box" />
+            <input type="hidden" name="User Agent" value={navigator.userAgent} />
+            <input type="hidden" name="Screen Resolution" value={`${window.screen.width}x${window.screen.height}`} />
+            <input type="hidden" name="Language" value={navigator.language} />
+            <input type="hidden" name="Timezone" value={Intl.DateTimeFormat().resolvedOptions().timeZone} />
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
